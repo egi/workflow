@@ -1,0 +1,3 @@
+DB initialization: (from your app directory)
+
+    ./Console/cake schema create --plugin workflow
