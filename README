@@ -1,3 +1,8 @@
-DB initialization: (from your app directory)
+Workflow Plugin for CakePHP 2.x
+===============================
 
+load the plugin manually by using this single call in app/Config/bootstrap.php
+    CakePlugin::load('ContactManager'); //Loads a single plugin
+
+DB initialization: (from your app directory)
     ./Console/cake schema create --plugin workflow
