@@ -17,24 +17,24 @@ class WorkflowWorkflow extends WorkflowAppModel Implements ezcWorkflowDefinition
 			'exclusive' => true,
 		)
 	);
-	
-	
+
+
 	function save(ezcWorkflow $workflow) {
 		$workflow->verify();
 		$version = $this->currentVersion($workflow->name) + 1;
-		
+
 		$db = $this->getDataSource();
 		$db->begin($this);
-		
+
 		$data = array();
 		$data[$this->alias]['name'] = $workflow->name;
 		$data[$this->alias]['version'] = $version;
-		
+
 		if (!parent::save($data)) {
 			$db->rollback($this);
 			return false;
 		}
-		
+
 		$data = array();
 		$nodes = $workflow->nodes;
 		foreach ($nodes as $node) {
@@ -50,7 +50,7 @@ class WorkflowWorkflow extends WorkflowAppModel Implements ezcWorkflowDefinition
 			}
 			$node->setId($this->Node->id);
 		}
-		
+
 		foreach ($nodes as $node) {
 			$data = array();
 			foreach ($node->getOutNodes() as $outNode) {
@@ -63,7 +63,7 @@ class WorkflowWorkflow extends WorkflowAppModel Implements ezcWorkflowDefinition
 				}
 			}
 		}
-		
+
 		$data = array();
 		foreach ($workflow->getVariableHandlers() as $variable => $class) {
 			$data['VariableHandler']['variable'] = $variable;
@@ -74,62 +74,62 @@ class WorkflowWorkflow extends WorkflowAppModel Implements ezcWorkflowDefinition
 				return false;
 			}
 		}
-		
+
 		$db->commit($this);
 		return true;
 	}
-	
+
 	function currentVersion($name) {
 		$version =  $this->find('first',array(
 			'fields' => "MAX(version) as current",
 			'conditions' => array('name' => $name),
 			'recursive' => -1
 		));
-		
+
 		if (empty($version))
 			return null;
-		
+
 		return (int)$version[0]['current'];
 	}
-	
+
 	public function load($id) {
 		$workflow = $this->read(null,$id);
-		
+
 		if (empty($workflow)) {
 			throw new ezcWorkflowDefinitionStorageException(
 				'Could not load workflow definition.'
 			);
 		}
-		
+
 		$mappedNodes = array();
-		
+
 		foreach ($workflow['Node'] as $i => $node) {
 			$configuration = unserialize(stripslashes($node['configuration']));
-			
+
 			if (is_null($configuration)) {
 				$configuration = ezcWorkflowUtil::getDefaultConfiguration($node['class']);
 			}
-			
+
 			$nodes[$i] = new $node['class'](
 				$configuration
 			);
-			
+
 			if ($nodes[$i] instanceof ezcWorkflowNodeFinally && !isset($finallyNode)) {
-					
+
 				$finallyNode = $nodes[$i];
-					
+
 			} else if ($nodes[$i] instanceof ezcWorkflowNodeEnd && !isset($defaultEndNode)) {
-					
+
 				$defaultEndNode = $nodes[$i];
-	
+
 			} else if ($nodes[$i] instanceof ezcWorkflowNodeStart && !isset($startNode)) {
-				
-				$startNode = $nodes[$i];	
+
+				$startNode = $nodes[$i];
 			}
-			
+
 			$mappedNodes[$node['id']] = $i;
 		}
-		
+
 		if (!isset($startNode) || !isset($defaultEndNode)) {
 			throw new ezcWorkflowDefinitionStorageException(
 				'Could not load workflow definition.'
@@ -143,30 +143,30 @@ class WorkflowWorkflow extends WorkflowAppModel Implements ezcWorkflowDefinition
 				'OutgoingNode.workflow_id' => $this->id,
 				)
 		));
-		
+
 		foreach ($connections as $connection) {
 			$nodes[$mappedNodes[$connection['WorkflowNodeConnection']['incoming_node_id']]]->addOutNode(
 				$nodes[$mappedNodes[$connection['WorkflowNodeConnection']['outgoing_node_id']]]
 			);
 		}
-		
+
 		if (!isset($finallyNode) || count($finallyNode->getInNodes() > 0)) {
 			$finallyNode = null;
 		}
-		
+
 		$workflow = new ezcWorkflow($this->data[$this->alias]['name'],$startNode,$defaultEndNode,$finallyNode);
 		$workflow->definitionStorage = $this;
 		$workflow->id = (int)$this->id;
 		$workflow->version = (int)$this->data[$this->alias]['version'];
-		
+
 		foreach ($this->data['VariableHandler'] as $variableHandler) {
 			$workflow->addVariableHandler($variableHandler['variable'],$variableHandler['class']);
 		}
-		
+
 		$workflow->verify();
 		return $workflow;
 	}
-	
+
 	public function loadByName($name,$version = 0) {
 		$id = $this->field('id',array(
 			$this->alias.'.name' => $name, $this->alias . '.version' => $version
