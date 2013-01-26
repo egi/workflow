@@ -1,8 +1,11 @@
 Workflow Plugin for CakePHP 2.x
 ===============================
 
-load the plugin manually by using this single call in app/Config/bootstrap.php
-    CakePlugin::load('ContactManager'); //Loads a single plugin
+1. put in plugins folder. watch for the lowercase of directory name.
+    # git submodule add -f git@github.com:egi/workflow.git plugins/workflow
 
-DB initialization: (from your app directory)
+2. load the plugin manually by using this single call in app/Config/bootstrap.php
+    CakePlugin::load('workflow'); //Loads a single plugin
+
+3. DB initialization: (from your app directory)
     ./Console/cake schema create --plugin workflow
