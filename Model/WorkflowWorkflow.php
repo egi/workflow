@@ -1,17 +1,17 @@
 <?php
-class WorkflowWorkflow extends WorkflowAppModel Implements ezcWorkflowDefinitionStorage {
+class WorkflowWorkflow extends workflowAppModel Implements ezcWorkflowDefinitionStorage {
 	var $name = 'WorkflowWorkflow';
 	var $displayField = 'name';
 
 	var $hasMany = array(
 		'Node' => array(
-			'className' => 'Workflow.WorkflowNode',
+			'className' => 'workflow.WorkflowNode',
 			'foreignKey' => 'workflow_id',
 			'dependent' => true,
 			'exclusive' => true,
 		),
 		'VariableHandler' => array(
-			'className' => 'Workflow.WorkflowVariableHandler',
+			'className' => 'workflow.WorkflowVariableHandler',
 			'foreignKey' => 'workflow_id',
 			'dependent' => true,
 			'exclusive' => true,

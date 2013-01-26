@@ -1,11 +1,11 @@
 <?php
-class WorkflowVariableHandler extends WorkflowAppModel {
+class WorkflowVariableHandler extends workflowAppModel {
 	var $name = 'WorkflowVariableHandler';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
 		'Workflow' => array(
-			'className' => 'Workflow.WorkflowWorkflow',
+			'className' => 'workflow.WorkflowWorkflow',
 			'foreignKey' => 'workflow_id',
 			'conditions' => '',
 			'fields' => '',

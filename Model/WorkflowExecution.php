@@ -1,18 +1,18 @@
 <?php
-class WorkflowExecution extends WorkflowAppModel {
+class WorkflowExecution extends workflowAppModel {
 	var $name = 'WorkflowExecution';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
 		'Workflow' => array(
-			'className' => 'Workflow.WorkflowWorkflow',
+			'className' => 'workflow.WorkflowWorkflow',
 			'foreignKey' => 'workflow_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
 		),
 		'ParentWorkflowExecution' => array(
-			'className' => 'Workflow.WorkflowExecution',
+			'className' => 'workflow.WorkflowExecution',
 			'foreignKey' => 'parent_id',
 			'conditions' => '',
 			'fields' => '',
@@ -22,7 +22,7 @@ class WorkflowExecution extends WorkflowAppModel {
 
 	var $hasMany = array(
 		'ChildWorkflowExecution' => array(
-			'className' => 'Workflow.WorkflowExecution',
+			'className' => 'workflow.WorkflowExecution',
 			'foreignKey' => 'parent_id',
 			'dependent' => true,
 			'conditions' => '',
@@ -35,7 +35,7 @@ class WorkflowExecution extends WorkflowAppModel {
 			'counterQuery' => ''
 		),
 		'State' => array(
-			'className' => 'Workflow.WorkflowExecutionState',
+			'className' => 'workflow.WorkflowExecutionState',
 			'foreignKey' => 'execution_id',
 			'dependent' => true,
 			'conditions' => '',

@@ -1,5 +1,5 @@
 <?php
-App::import('Vendor','Workflow.WorkflowLibLoader');
+App::import('Vendor','workflow.WorkflowLibLoader');
 class workflowAppModel extends AppModel {
 
 }

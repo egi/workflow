@@ -1,12 +1,12 @@
 <?php
-class WorkflowNodeConnection extends WorkflowAppModel {
+class WorkflowNodeConnection extends workflowAppModel {
 	var $name = 'WorkflowNodeConnection';
 	var $primaryKey = false;
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
 		'IncomingNode' => array(
-			'className' => 'Workflow.WorkflowNode',
+			'className' => 'workflow.WorkflowNode',
 			'foreignKey' => 'incoming_node_id',
 			'type' => 'INNER',
 			'conditions' => '',
@@ -14,7 +14,7 @@ class WorkflowNodeConnection extends WorkflowAppModel {
 			'order' => ''
 		),
 		'OutgoingNode' => array(
-			'className' => 'Workflow.WorkflowNode',
+			'className' => 'workflow.WorkflowNode',
 			'foreignKey' => 'outgoing_node_id',
 			'type' => 'INNER',
 			'conditions' => '',
