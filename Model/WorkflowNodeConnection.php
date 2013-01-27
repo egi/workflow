@@ -1,7 +1,7 @@
 <?php
 class WorkflowNodeConnection extends workflowAppModel {
 	var $name = 'WorkflowNodeConnection';
-	var $primaryKey = false;
+	var $primaryKey = 'id';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
