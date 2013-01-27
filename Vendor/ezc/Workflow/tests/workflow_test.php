@@ -2,8 +2,8 @@
 /**
  * @package Workflow
  * @subpackage Tests
- * @version 1.3.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.1
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -24,32 +24,13 @@ class ezcWorkflowTest extends ezcWorkflowTestCase
         return new PHPUnit_Framework_TestSuite( 'ezcWorkflowTest' );
     }
 
-    public function testGetName()
+    public function testWorkflowNameCanBeRetrieved()
     {
         $this->setUpStartEnd();
         $this->assertEquals( 'StartEnd', $this->workflow->name );
     }
 
-    public function testGetSetId()
-    {
-        $this->setUpStartEnd();
-        $this->assertFalse( $this->workflow->id );
-
-        $this->workflow->id = 1;
-
-        $this->assertEquals( 1, $this->workflow->id );
-    }
-
-    public function testGetSetDefinition()
-    {
-        $this->setUpStartEnd();
-        $this->assertNull( $this->workflow->definitionStorage );
-
-        $this->workflow->definitionStorage = $this->xmlStorage;
-        $this->assertNotNull( $this->workflow->definitionStorage );
-    }
-
-    public function testGetSetName()
+    public function testWorkflowNameCanBeRetrievedAndSet()
     {
         $workflow = new ezcWorkflow( 'Test' );
         $this->assertEquals( 'Test', $workflow->name );
@@ -70,7 +51,26 @@ class ezcWorkflowTest extends ezcWorkflowTestCase
         $this->fail( 'Expected an ezcBaseValueException to be thrown.' );
     }
 
-    public function testGetNodes()
+    public function testWorkflowIdCanBeRetrievedAndSet()
+    {
+        $this->setUpStartEnd();
+        $this->assertFalse( $this->workflow->id );
+
+        $this->workflow->id = 1;
+
+        $this->assertEquals( 1, $this->workflow->id );
+    }
+
+    public function testWorkflowDefinitionCanBeRetrievedAndSet()
+    {
+        $this->setUpStartEnd();
+        $this->assertNull( $this->workflow->definitionStorage );
+
+        $this->workflow->definitionStorage = $this->xmlStorage;
+        $this->assertNotNull( $this->workflow->definitionStorage );
+    }
+
+    public function testWorkflowNodesCanBeRetrieved()
     {
         $this->setUpStartEnd();
         $nodes = $this->workflow->nodes;
@@ -79,7 +79,7 @@ class ezcWorkflowTest extends ezcWorkflowTestCase
         $this->assertSame( $this->workflow->endNode, $nodes[2] );
     }
 
-    public function testHasSubWorkflows()
+    public function testWhetherOrNotAWorkflowHasSubworkflowsCanBeDetermined()
     {
         $this->setUpStartEnd();
         $this->assertFalse( $this->workflow->hasSubWorkflows() );
@@ -88,19 +88,19 @@ class ezcWorkflowTest extends ezcWorkflowTestCase
         $this->assertTrue( $this->workflow->hasSubWorkflows() );
     }
 
-    public function testIsInteractive()
+    public function testWhetherOrNotAWorkflowIsInteractiveCanBeDetermined()
     {
         $this->setUpStartEnd();
         $this->assertFalse( $this->workflow->isInteractive() );
     }
 
-    public function testVerify()
+    public function testValidityOfAWorkflowCanBeVerified()
     {
         $this->setUpStartEnd();
         $this->workflow->verify();
     }
 
-    public function testVerify2()
+    public function testWorkflowWithoutAStartNodeIsInvalid()
     {
         $workflow = new ezcWorkflow( 'Test' );
 
@@ -117,7 +117,7 @@ class ezcWorkflowTest extends ezcWorkflowTestCase
         $this->fail( 'Expected an ezcWorkflowDefinitionStorageException to be thrown.' );
     }
 
-    public function testVerify3()
+    public function testWorkflowWithMoreThanOneStartNodeIsInvalid()
     {
         $workflow = new ezcWorkflow( 'Test' );
         $workflow->startNode->addOutNode( new ezcWorkflowNodeStart );
@@ -135,7 +135,7 @@ class ezcWorkflowTest extends ezcWorkflowTestCase
         $this->fail( 'Expected an ezcWorkflowDefinitionStorageException to be thrown.' );
     }
 
-    public function testVerify4()
+    public function testWorkflowWithMoreThanOneFinallyNodeIsInvalid()
     {
         $workflow = new ezcWorkflow( 'Test' );
         $workflow->finallyNode->addOutNode( new ezcWorkflowNodeFinally );
@@ -329,6 +329,57 @@ class ezcWorkflowTest extends ezcWorkflowTestCase
         }
 
         $this->fail( 'Expected an ezcBaseValueException to be thrown.' );
+    }
+
+    public function testForIssue14451()
+    {
+        $this->workflow = new ezcWorkflow( 'Test' );
+
+        $this->assertEquals( 1, count( $this->workflow ) );
+        $this->assertEquals( 1, count( $this->workflow->nodes ) );
+
+        $this->workflow->startNode->addOutNode( $this->workflow->endNode );
+
+        $this->assertEquals( 2, count( $this->workflow ) );
+        $this->assertEquals( 2, count( $this->workflow->nodes ) );
+
+        $this->workflow->startNode->removeOutNode( $this->workflow->endNode );
+
+        $this->assertEquals( 1, count( $this->workflow ) );
+        $this->assertEquals( 1, count( $this->workflow->nodes ) );
+
+        $input = new ezcWorkflowNodeInput( array( 'value' => new ezcWorkflowConditionIsInteger ) );
+        $this->workflow->startNode->addOutNode( $input );
+
+        $this->assertEquals( 2, count( $this->workflow ) );
+        $this->assertEquals( 2, count( $this->workflow->nodes ) );
+
+        $choice = new ezcWorkflowNodeExclusiveChoice;
+        $input->addOutNode( $choice );
+
+        $this->assertEquals( 3, count( $this->workflow ) );
+        $this->assertEquals( 3, count( $this->workflow->nodes ) );
+
+        $branch1 = new ezcWorkflowNodeInput( array( 'value' => new ezcWorkflowConditionIsAnything ) );
+        $branch2 = new ezcWorkflowNodeInput( array( 'value' => new ezcWorkflowConditionIsAnything ) );
+
+        $choice->addConditionalOutNode( new ezcWorkflowConditionIsAnything , $branch1 );
+
+        $this->assertEquals( 4, count( $this->workflow ) );
+        $this->assertEquals( 4, count( $this->workflow->nodes ) );
+
+        $choice->addConditionalOutNode( new ezcWorkflowConditionIsAnything , $branch2 );
+
+        $this->assertEquals( 5, count( $this->workflow ) );
+        $this->assertEquals( 5, count( $this->workflow->nodes ) );
+
+        $merge = new ezcWorkflowNodeSimpleMerge;
+        $merge->addInNode( $branch1 );
+        $merge->addInNode( $branch2 );
+        $merge->addOutNode( $this->workflow->endNode );
+
+        $this->assertEquals( 7, count( $this->workflow ) );
+        $this->assertEquals( 7, count( $this->workflow->nodes ) );
     }
 }
 ?>

@@ -3,8 +3,8 @@
  * File containing the ezcWorkflowNodeArithmeticBase class.
  *
  * @package Workflow
- * @version 1.3.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.1
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -19,7 +19,7 @@
  * computation in $value member variable.
  *
  * @package Workflow
- * @version 1.3.3
+ * @version 1.4.1
  */
 abstract class ezcWorkflowNodeArithmeticBase extends ezcWorkflowNode
 {
@@ -93,11 +93,6 @@ abstract class ezcWorkflowNodeArithmeticBase extends ezcWorkflowNode
                 $variableName
                 )
             );
-        }
-
-        if ( is_string( $this->configuration ) )
-        {
-            $this->operand = $execution->getVariable( $this->configuration );
         }
 
         if ( is_numeric( $this->configuration['operand'] ) )

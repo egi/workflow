@@ -4,7 +4,7 @@
  *
  * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
- * @version 1.4.1
+ * @version 1.5
  * @filesource
  * @package Cache
  */
@@ -53,6 +53,7 @@ return array(
     'ezcCacheStorageFileApcArrayOptions'     => 'Cache/options/storage_apc_array.php',
     'ezcCacheStorageFileArray'               => 'Cache/storage/file/array.php',
     'ezcCacheStorageFileEvalArray'           => 'Cache/storage/file/eval_array.php',
+    'ezcCacheStorageFileObject'              => 'Cache/storage/file/object.php',
     'ezcCacheStorageFileOptions'             => 'Cache/options/storage_file.php',
     'ezcCacheStorageFilePlain'               => 'Cache/storage/file/plain.php',
     'ezcCacheStorageMemcacheOptions'         => 'Cache/options/storage_memcache.php',

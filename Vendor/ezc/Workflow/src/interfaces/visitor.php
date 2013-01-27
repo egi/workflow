@@ -1,15 +1,15 @@
 <?php
 /**
- * File containing the ezcWorkflowVisitor interface.
+ * File containing the ezcWorkflowVisitor class.
  *
  * @package Workflow
- * @version 1.3.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.1
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
 /**
- * Interface for visitor implementations that want to process
+ * Base class for visitor implementations that want to process
  * a workflow using the Visitor design pattern.
  *
  * visit() is called on each of the nodes in the workflow in a top-down,
@@ -19,10 +19,35 @@
  * passing the visitor object as the sole parameter.
  *
  * @package Workflow
- * @version 1.3.3
+ * @version 1.4.1
  */
-interface ezcWorkflowVisitor
+class ezcWorkflowVisitor implements Countable
 {
+    /**
+     * Holds the visited nodes.
+     *
+     * @var SplObjectStorage
+     */
+    protected $visited;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->visited = new SplObjectStorage;
+    }
+
+    /**
+     * Returns the number of visited nodes.
+     *
+     * @return integer
+     */
+    public function count()
+    {
+        return count( $this->visited );
+    }
+
     /**
      * Visit the $visitable.
      *
@@ -31,6 +56,30 @@ interface ezcWorkflowVisitor
      * @param ezcWorkflowVisitable $visitable
      * @return bool
      */
-    public function visit( ezcWorkflowVisitable $visitable );
+    public function visit( ezcWorkflowVisitable $visitable )
+    {
+        if ( $visitable instanceof ezcWorkflowNode )
+        {
+            if ( $this->visited->contains( $visitable ) )
+            {
+                return false;
+            }
+
+            $this->visited->attach( $visitable );
+        }
+
+        $this->doVisit( $visitable );
+
+        return true;
+    }
+
+    /**
+     * Perform the visit.
+     *
+     * @param ezcWorkflowVisitable $visitable
+     */
+    protected function doVisit( ezcWorkflowVisitable $visitable )
+    {
+    }
 }
 ?>

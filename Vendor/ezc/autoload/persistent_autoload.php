@@ -2,15 +2,16 @@
 /**
  * Autoloader definition for the PersistentObject component.
  *
- * @copyright Copyright (C) 2005-2009 eZ systems as. All rights reserved.
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
- * @version 1.6
+ * @version 1.7.1
  * @filesource
  * @package PersistentObject
  */
 
 return array(
     'ezcPersistentObjectException'                             => 'PersistentObject/exceptions/persistent_object_exception.php',
+    'ezcPersistentQueryException'                              => 'PersistentObject/exceptions/query_exception.php',
     'ezcPersistentDefinitionMissingIdPropertyException'        => 'PersistentObject/exceptions/definition_missing_id_property.php',
     'ezcPersistentDefinitionNotFoundException'                 => 'PersistentObject/exceptions/definition_not_found.php',
     'ezcPersistentIdentifierGenerationException'               => 'PersistentObject/exceptions/identifier_generation.php',
@@ -20,8 +21,8 @@ return array(
     'ezcPersistentIdentityRelatedObjectsInconsistentException' => 'PersistentObject/exceptions/identity_related_objects_inconsistent.php',
     'ezcPersistentInvalidObjectStateException'                 => 'PersistentObject/exceptions/invalid_object_state.php',
     'ezcPersistentObjectAlreadyPersistentException'            => 'PersistentObject/exceptions/already_persistent.php',
+    'ezcPersistentObjectNotFoundException'                     => 'PersistentObject/exceptions/object_not_found.php',
     'ezcPersistentObjectNotPersistentException'                => 'PersistentObject/exceptions/not_persistent.php',
-    'ezcPersistentQueryException'                              => 'PersistentObject/exceptions/query_exception.php',
     'ezcPersistentRelatedObjectNotFoundException'              => 'PersistentObject/exceptions/related_object_not_found.php',
     'ezcPersistentRelationInvalidException'                    => 'PersistentObject/exceptions/relation_invalid.php',
     'ezcPersistentRelationNotFoundException'                   => 'PersistentObject/exceptions/relation_not_found.php',

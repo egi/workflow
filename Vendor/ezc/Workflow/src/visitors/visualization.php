@@ -3,8 +3,8 @@
  * File containing the ezcWorkflowVisitorVisualization class.
  *
  * @package Workflow
- * @version 1.3.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.1
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -23,9 +23,9 @@
  * @property ezcWorkflowVisitorVisualizationOptions $options
  *
  * @package Workflow
- * @version 1.3.3
+ * @version 1.4.1
  */
-class ezcWorkflowVisitorVisualization implements ezcWorkflowVisitor
+class ezcWorkflowVisitorVisualization extends ezcWorkflowVisitor
 {
     /**
      * Holds the displayed strings for each of the nodes.
@@ -40,13 +40,6 @@ class ezcWorkflowVisitorVisualization implements ezcWorkflowVisitor
      * @var array( id => array( ezcWorkflowNode ) )
      */
     protected $edges = array();
-
-    /**
-     * Holds the id of each node that has been visited already.
-     *
-     * @var array
-     */
-    protected $visited = array();
 
     /**
      * Holds the name of the workflow.
@@ -67,6 +60,7 @@ class ezcWorkflowVisitorVisualization implements ezcWorkflowVisitor
      */
     public function __construct()
     {
+        parent::__construct();
         $this->options = new ezcWorkflowVisitorVisualizationOptions;
     }
 
@@ -128,13 +122,11 @@ class ezcWorkflowVisitorVisualization implements ezcWorkflowVisitor
     }
 
     /**
-     * Visits the node and sets the the member variables according to the node
-     * type and contents.
+     * Perform the visit.
      *
      * @param ezcWorkflowVisitable $visitable
-     * @return boolean
      */
-    public function visit( ezcWorkflowVisitable $visitable )
+    protected function doVisit( ezcWorkflowVisitable $visitable )
     {
         if ( $visitable instanceof ezcWorkflow )
         {
@@ -149,13 +141,6 @@ class ezcWorkflowVisitorVisualization implements ezcWorkflowVisitor
         if ( $visitable instanceof ezcWorkflowNode )
         {
             $id = $visitable->getId();
-
-            if ( isset( $this->visited[$id] ) )
-            {
-                return false;
-            }
-
-            $this->visited[$id] = true;
 
             if ( in_array( $id, $this->options['highlightedNodes'] ) )
             {
@@ -195,8 +180,6 @@ class ezcWorkflowVisitorVisualization implements ezcWorkflowVisitor
 
             $this->edges[$id] = $outNodes;
         }
-
-        return true;
     }
 
     /**

@@ -3,8 +3,8 @@
  * File containing the ezcWorkflowVisitorNodeCollector class.
  *
  * @package Workflow
- * @version 1.3.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.1
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -12,11 +12,25 @@
  * Collects all the nodes in a workflow in an array.
  *
  * @package Workflow
- * @version 1.3.3
+ * @version 1.4.1
  * @ignore
  */
-class ezcWorkflowVisitorNodeCollector implements ezcWorkflowVisitor
+class ezcWorkflowVisitorNodeCollector extends ezcWorkflowVisitor
 {
+    /**
+     * Holds the start node object.
+     *
+     * @var ezcWorkflowNodeStart
+     */
+    protected $startNode;
+
+    /**
+     * Holds the default end node object.
+     *
+     * @var ezcWorkflowNodeEnd
+     */
+    protected $endNode;
+
     /**
      * Holds the finally node object.
      *
@@ -34,7 +48,7 @@ class ezcWorkflowVisitorNodeCollector implements ezcWorkflowVisitor
     /**
      * Holds the visited nodes.
      *
-     * @var array(ezcWorkflowVisitable)
+     * @var array(integer=>ezcWorkflowNode)
      */
     protected $nodes = array();
 
@@ -43,7 +57,7 @@ class ezcWorkflowVisitorNodeCollector implements ezcWorkflowVisitor
      *
      * @var integer
      */
-    protected $nextId = 1;
+    protected $nextId = 0;
 
     /**
      * Flag that indicates whether the node list has been sorted.
@@ -53,71 +67,54 @@ class ezcWorkflowVisitorNodeCollector implements ezcWorkflowVisitor
     protected $sorted = false;
 
     /**
-     * Constructs a new
+     * Constructor.
      *
      * @param ezcWorkflow $workflow
      */
     public function __construct( ezcWorkflow $workflow )
     {
+        parent::__construct();
         $workflow->accept( $this );
     }
 
     /**
-     * Visits the node, adds it to the list of nodes.
-     *
-     * Returns true if the node was added. False if it was already in the list
-     * of nodes.
+     * Perform the visit.
      *
      * @param ezcWorkflowVisitable $visitable
-     * @return boolean
      */
-    public function visit( ezcWorkflowVisitable $visitable )
+    protected function doVisit( ezcWorkflowVisitable $visitable )
     {
         if ( $visitable instanceof ezcWorkflow )
         {
-            $visitor      = new ezcWorkflowVisitorMaxNodeIdFinder( $visitable );
-            $this->nextId = $visitor->getMaxNodeId() + 1;
-            unset( $visitor );
+            $visitable->startNode->setId( ++$this->nextId );
+            $this->startNode = $visitable->startNode;
 
-            if ( $visitable->startNode->getId() === false )
-            {
-                $visitable->startNode->setId( $this->nextId++ );
-            }
-
-            if ( $visitable->endNode->getId() === false )
-            {
-                $visitable->endNode->setId( $this->nextId++ );
-            }
+            $visitable->endNode->setId( ++$this->nextId );
+            $this->endNode = $visitable->endNode;
 
             if ( count( $visitable->finallyNode->getOutNodes() ) > 0 )
             {
                 $this->finallyNode = $visitable->finallyNode;
-
-                if ( $visitable->finallyNode->getId() === false ) {
-                    $visitable->finallyNode->setId( $this->nextId++ );
-                }
+                $visitable->finallyNode->setId( ++$this->nextId );
             }
         }
 
         else if ( $visitable instanceof ezcWorkflowNode )
         {
-            $id = $visitable->getId();
-
-            if ( $id === false )
+            if ( $visitable !== $this->startNode &&
+                 $visitable !== $this->endNode &&
+                 $visitable !== $this->finallyNode )
             {
-                $id = $this->nextId++;
+                $id = ++$this->nextId;
                 $visitable->setId( $id );
             }
-
-            if ( isset( $this->nodes[$id] ) )
+            else
             {
-                return false;
+                $id = $visitable->getId();
             }
 
             $this->nodes[$id] = $visitable;
         }
-
-        return true;
     }
 
     /**

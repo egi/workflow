@@ -2,9 +2,9 @@
 /**
  * Autoloader definition for the Debug component.
  *
- * @copyright Copyright (C) 2005-2008 eZ systems as. All rights reserved.
+ * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
- * @version 1.2
+ * @version 1.2.1
  * @filesource
  * @package Debug
  */
@@ -17,7 +17,6 @@ return array(
     'ezcDebug'                               => 'Debug/debug.php',
     'ezcDebugHtmlFormatter'                  => 'Debug/formatters/html_formatter.php',
     'ezcDebugMemoryWriter'                   => 'Debug/writers/memory_writer.php',
-    'ezcDebugMessage'                        => 'Debug/debug_message.php',
     'ezcDebugOptions'                        => 'Debug/options.php',
     'ezcDebugPhpStacktraceIterator'          => 'Debug/stacktrace/php_iterator.php',
     'ezcDebugStructure'                      => 'Debug/structs/debug_structure.php',

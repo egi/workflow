@@ -2,9 +2,9 @@
 /**
  * Autoloader definition for the Search component.
  *
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
- * @version 1.0.5
+ * @version 1.0.9
  * @filesource
  * @package Search
  */
@@ -17,18 +17,22 @@ return array(
     'ezcSearchDefinitionNotFoundException'       => 'Search/exceptions/definition_not_found.php',
     'ezcSearchDoesNotProvideDefinitionException' => 'Search/exceptions/does_not_provide_definition.php',
     'ezcSearchFieldNotDefinedException'          => 'Search/exceptions/field_not_defined.php',
+    'ezcSearchIdNotFoundException'               => 'Search/exceptions/id_not_found.php',
     'ezcSearchIncompleteStateException'          => 'Search/exceptions/incomplete_state.php',
+    'ezcSearchInvalidResultException'            => 'Search/exceptions/invalid_result.php',
     'ezcSearchNetworkException'                  => 'Search/exceptions/network.php',
     'ezcSearchQueryVariableParameterException'   => 'Search/exceptions/query_variable_parameter.php',
     'ezcSearchTransactionException'              => 'Search/exceptions/transaction.php',
     'ezcSearchQuery'                             => 'Search/interfaces/query.php',
     'ezcSearchDefinitionManager'                 => 'Search/interfaces/definition_manager.php',
     'ezcSearchDefinitionProvider'                => 'Search/interfaces/definition_provider.php',
+    'ezcSearchDeleteQuery'                       => 'Search/interfaces/query_delete.php',
     'ezcSearchFindQuery'                         => 'Search/interfaces/query_find.php',
     'ezcSearchHandler'                           => 'Search/interfaces/handler.php',
     'ezcSearchIndexHandler'                      => 'Search/interfaces/index_handler.php',
     'ezcSearchDefinitionDocumentField'           => 'Search/structs/document_field_definition.php',
-    'ezcSearchDeleteQuery'                       => 'Search/interfaces/query_delete.php',
+    'ezcSearchDeleteQuerySolr'                   => 'Search/abstraction/implementations/solr_delete.php',
+    'ezcSearchDeleteQueryZendLucene'             => 'Search/abstraction/implementations/zend_lucene_delete.php',
     'ezcSearchDocumentDefinition'                => 'Search/document_definition.php',
     'ezcSearchEmbeddedManager'                   => 'Search/managers/embedded_manager.php',
     'ezcSearchQueryBuilder'                      => 'Search/query_builder.php',

@@ -3,8 +3,8 @@
  * File containing the ezcWorkflowExecution class.
  *
  * @package Workflow
- * @version 1.3.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.1
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -25,7 +25,7 @@
  *           The workflow being executed.
  *
  * @package Workflow
- * @version 1.3.3
+ * @version 1.4.1
  * @mainclass
  */
 abstract class ezcWorkflowExecution
@@ -83,36 +83,50 @@ abstract class ezcWorkflowExecution
     protected $nextThreadId = 0;
 
     /**
+     * Flag that indicates whether or not this execution has been cancelled.
+     *
      * @var bool
      */
     protected $cancelled;
 
     /**
+     * Flag that indicates whether or not this execution has ended.
+     *
      * @var bool
      */
     protected $ended;
 
     /**
+     * Flag that indicates whether or not this execution has been resumed.
+     *
      * @var bool
      */
     protected $resumed;
 
     /**
+     * Flag that indicates whether or not this execution has been suspended.
+     *
      * @var bool
      */
     protected $suspended;
 
     /**
+     * Plugins registered for this execution.
+     *
      * @var array
      */
     protected $plugins = array();
 
     /**
+     * Workflow variables.
+     *
      * @var array
      */
     protected $variables = array();
 
     /**
+     * Workflow variables the execution is waiting for.
+     *
      * @var array
      */
     protected $waitingFor = array();
@@ -215,7 +229,7 @@ abstract class ezcWorkflowExecution
      * @throws ezcWorkflowExecutionException
      *         If no workflow has been set up for execution.
      */
-    public function start( $parentId = 0 )
+    public function start( $parentId = null )
     {
         if ( $this->workflow === null )
         {
@@ -270,6 +284,8 @@ abstract class ezcWorkflowExecution
         $this->resumed   = false;
         $this->suspended = true;
 
+        $this->saveToVariableHandlers();
+
         $keys     = array_keys( $this->variables );
         $count    = count( $keys );
         $handlers = $this->workflow->getVariableHandlers();
@@ -283,7 +299,6 @@ abstract class ezcWorkflowExecution
         }
 
         $this->doSuspend();
-        $this->saveToVariableHandlers();
 
         foreach ( $this->plugins as $plugin )
         {
@@ -304,7 +319,7 @@ abstract class ezcWorkflowExecution
      * @throws ezcWorkflowInvalidInputException if the input given does not match the expected data.
      * @throws ezcWorkflowExecutionException if there is no prior ID for this execution.
      */
-    public function resume( Array $inputData = array() )
+    public function resume( array $inputData = array() )
     {
         if ( $this->id === null )
         {
@@ -460,7 +475,9 @@ abstract class ezcWorkflowExecution
                 // workflow instance has not ended yet.
                 if ( $this->cancelled && $this->ended )
                 {
+                    // @codeCoverageIgnoreStart
                     break;
+                    // @codeCoverageIgnoreEnd
                 }
 
                 // The current node is an end node but there are still
@@ -638,10 +655,6 @@ abstract class ezcWorkflowExecution
      */
     public function endThread( $threadId )
     {
-        if ($threadId === false || is_null($threadId)) {
-            return;
-        }
-        
         if ( isset( $this->threads[$threadId] ) )
         {
             unset( $this->threads[$threadId] );
@@ -911,7 +924,7 @@ abstract class ezcWorkflowExecution
      * @param array $variables
      * @ignore
      */
-    public function setVariables( Array $variables )
+    public function setVariables( array $variables )
     {
         $this->variables = array();
 

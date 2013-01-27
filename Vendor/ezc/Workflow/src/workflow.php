@@ -3,8 +3,8 @@
  * File containing the ezcWorkflow class.
  *
  * @package Workflow
- * @version 1.3.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.1
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -31,7 +31,7 @@
  * @property-read array(ezcWorkflowNode) $nodes All the nodes of this workflow.
  *
  * @package Workflow
- * @version 1.3.3
+ * @version 1.4.1
  * @mainclass
  */
 class ezcWorkflow implements Countable, ezcWorkflowVisitable
@@ -253,9 +253,10 @@ class ezcWorkflow implements Countable, ezcWorkflowVisitable
      */
     public function count()
     {
-        $counter = new ezcWorkflowVisitorNodeCounter( $this );
+        $visitor = new ezcWorkflowVisitor;
+        $this->accept( $visitor );
 
-        return $counter->getNumNodes();
+        return count( $visitor );
     }
 
     /**

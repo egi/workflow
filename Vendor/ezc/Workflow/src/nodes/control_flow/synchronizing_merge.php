@@ -3,8 +3,8 @@
  * File containing the ezcWorkflowNodeSynchronizingMerge class.
  *
  * @package Workflow
- * @version 1.3.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.4.1
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 
@@ -31,7 +31,7 @@
  *
  * // create the exclusive choice branching node
  * $choice = new ezcWorkflowNodeMultiChoice;
- * $intput->addOutNode( $choice );
+ * $input->addOutNode( $choice );
  *
  * $branch1 = ....; // create nodes for the first branch of execution here..
  * $branch2 = ....; // create nodes for the second branch of execution here..
@@ -53,7 +53,7 @@
  * </code>
  *
  * @package Workflow
- * @version 1.3.3
+ * @version 1.4.1
  */
 class ezcWorkflowNodeSynchronizingMerge extends ezcWorkflowNodeSynchronization
 {
