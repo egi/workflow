@@ -9,7 +9,7 @@ class MyServiceTestObject implements ezcWorkflowServiceObject {
  	public function __construct( $message ) {
 		$this->message = $message;
 	}
-	
+
 	public function execute( ezcWorkflowExecution $execution ) {
 		$execution->setVariable( 'choice', true );
 		return true;
@@ -20,7 +20,7 @@ class MyServiceTestObject implements ezcWorkflowServiceObject {
 	}
 }
 
-class CakeWorkflowExecutionTestCase extends CakeTestCase {
+class CakeWorkflowExecutionTest extends CakeTestCase {
 	var $fixtures = array(
 		'plugin.workflow.workflow_workflow',
 		'plugin.workflow.workflow_node',
@@ -29,7 +29,7 @@ class CakeWorkflowExecutionTestCase extends CakeTestCase {
 		'plugin.workflow.workflow_variable_handler',
 		'plugin.workflow.workflow_execution_state',
 	);
-	
+
 	function startTest() {
 		$this->Definition = ClassRegistry::init('WorkflowWorkflow');
 	}
@@ -38,8 +38,8 @@ class CakeWorkflowExecutionTestCase extends CakeTestCase {
 		unset($this->Definition);
 		ClassRegistry::flush();
 	}
-	
-	
+
+
 	private function buildWorkflow() {
 		$workflow = new ezcWorkflow( 'Test' );
 		$initNode = new ezcWorkflowNodeVariableSet(array('init' => 'testValue'));
@@ -48,7 +48,7 @@ class CakeWorkflowExecutionTestCase extends CakeTestCase {
 		);
 
 		$workflow->startNode->addOutNode( $initNode );
-		$initNode->addOutNode($input); 
+		$initNode->addOutNode($input);
 		$branch = new ezcWorkflowNodeExclusiveChoice;
 		$branch->addInNode( $input );
 		$trueNode = new ezcWorkflowNodeAction( array( 'class' => 'MyServiceTestObject',
@@ -71,7 +71,7 @@ class CakeWorkflowExecutionTestCase extends CakeTestCase {
 		$merge->addOutNode( $workflow->endNode );
 		return $workflow;
 	}
-	
+
 	function testSimpleExecution() {
 		$workflow = $this->buildWorkflow();
 		$this->Definition->save($workflow);
@@ -87,7 +87,7 @@ class CakeWorkflowExecutionTestCase extends CakeTestCase {
 		$this->assertEqual('testValue',$execution->getVariable('init'));
 		$waitingFor = $execution->getWaitingFor();
 		$this->assertEqual('choice',key($execution->getWaitingFor()));
-		
+
 		//Let's cancell it
 		$execution->cancel();
 		// And try to resume it again
@@ -96,7 +96,7 @@ class CakeWorkflowExecutionTestCase extends CakeTestCase {
 		} catch (Exception $e) {
 			$this->assertNotNull($e->getMessage());
 		}
-		
+
 		//Now lets create another execution and make it go to the end
 		$execution = new CakeWorkflowExecution();
 		$execution->workflow = $this->Definition->loadByName('Test');
@@ -104,7 +104,7 @@ class CakeWorkflowExecutionTestCase extends CakeTestCase {
 		$this->assertEqual('choice',key($execution->getWaitingFor()));
 		$execution->resume(array('choice' => true));
 		$this->assertTrue($execution->hasEnded());
-		
+
 		//Now let's check again that the execution is not in the database anymore
 		try {
 			$execution = new CakeWorkflowExecution($id);
@@ -112,5 +112,5 @@ class CakeWorkflowExecutionTestCase extends CakeTestCase {
 			$this->assertNotNull($e->getMessage());
 		}
 	}
-	
+
 }
